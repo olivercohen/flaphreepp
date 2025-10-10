@@ -1,0 +1,7 @@
+{
+	"InstallScripts" : 
+	[
+		"C:/dev/flappy_demo/cmake-build-debug-visual-studio/_deps/threepp-subbuild/cmake_install.cmake"
+	],
+	"Parallel" : false
+}
