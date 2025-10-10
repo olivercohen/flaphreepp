@@ -30,14 +30,14 @@
 enum class BirdState {ALIVE, DEAD};
 
 struct Bird {
-    double vel_y = 0.0;
-    double pos_y = 0.0;
-    double rot_z = 0.0;
+    float vel_y = 0.0f;
+    float pos_y = 0.0f;
+    float rot_z = 0.0f;
     BirdState bird_state = BirdState::ALIVE;
 
     void flap() {
         if (bird_state == BirdState::ALIVE) {
-            vel_y = 10.0;
+            vel_y = 10.0f;
         }
     }
 
@@ -46,8 +46,8 @@ struct Bird {
     }
 
     // handles rotation with max/min rotaion
-    void setRotation(double velocity) {
-        rot_z = velocity*0.01*threepp::math::PI;
+    void setRotation(float velocity) {
+        rot_z = velocity*0.01f*threepp::math::PI;
         if (rot_z < -2/threepp::math::PI) {
             rot_z = -2/threepp::math::PI;
         } else if (rot_z > (1/threepp::math::PI)) {
@@ -55,7 +55,7 @@ struct Bird {
         }
     }
 
-    void update(double dt) {
+    void update(float dt) {
         if (bird_state == BirdState::ALIVE) {
         vel_y += constants::GRAVITY * dt;
         pos_y += vel_y * dt;

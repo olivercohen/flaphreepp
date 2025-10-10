@@ -17,6 +17,7 @@ add_executable(flappy_demo main.cpp
         constants.hpp
         bird.hpp
         draw.hpp
+        pipes.hpp
 )
 target_link_libraries(flappy_demo PRIVATE threepp::threepp)
 

@@ -6,4 +6,5 @@
 
 namespace constants {
     inline constexpr float GRAVITY = -20.0f;
+    inline constexpr float PIPE_SPEED = -10.0f;
 }
