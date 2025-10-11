@@ -26,16 +26,16 @@
 #include <random>
 #include "constants.hpp"
 
-enum class PipesState{ONSCREEN, OFFSCREEN, FREEZE};
-
 inline std::random_device rd;
 inline std::mt19937 gen(rd());
-inline std::uniform_int_distribution<> distrib(-10, 10);
+inline std::uniform_int_distribution<> distrib(pipecfg::RAND_MIN_Y, pipecfg::RAND_MAX_Y);
+
+enum class PipesState{ONSCREEN, OFFSCREEN, FREEZE};
 
 struct PipePair {
     float pos_y = 0.0f;
     float pos_x = 0.0f;
-    float speed = constants::PIPE_SPEED;
+    float speed = pipecfg::PIPE_SPEED;
     PipesState pipe_state = PipesState::ONSCREEN;
 
     void freeze() {
@@ -43,19 +43,35 @@ struct PipePair {
         pipe_state = PipesState::FREEZE;
     }
 
-    void spawn() {
-        pos_x = 30.0f;
+    void spawn(const float x) {
+        pos_x = x;
         pos_y = static_cast<float>(distrib(gen));
-        speed = constants::PIPE_SPEED;
+        speed = pipecfg::PIPE_SPEED;
     }
 
-    void visCheck() {
-        if (pos_x < -35) {
-            pipe_state = PipesState::OFFSCREEN;
-            spawn();
-        }
+    bool isOffscreen() {
+        return (pos_x < pipecfg::DESPAWN_X);
     }
+
     void update(float dt) {
+        if (pipe_state == PipesState::FREEZE) {return;};
         pos_x += speed * dt;
     }
 };
+
+inline std::shared_ptr<threepp::Group> createPipeGroup(
+    auto &pipe_geom,
+    auto &pipe_mat) {
+
+    auto group = threepp::Group::create();
+
+    auto top = threepp::Mesh::create(pipe_geom, pipe_mat);
+    auto bot = threepp::Mesh::create(pipe_geom, pipe_mat);
+    top->position.set(0, (pipecfg::PIPE_HEIGHT + pipecfg::GAP_SIZE)/2, 0);
+    bot->position.set(0, -(pipecfg::PIPE_HEIGHT + pipecfg::GAP_SIZE)/2, 0);
+
+    group->add(top);
+    group->add(bot);
+
+    return group;
+}

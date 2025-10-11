@@ -37,7 +37,7 @@ struct Bird {
 
     void flap() {
         if (bird_state == BirdState::ALIVE) {
-            vel_y = 10.0f;
+            vel_y = birdcfg::FLAP_VEL;
         }
     }
 
@@ -57,7 +57,7 @@ struct Bird {
 
     void update(float dt) {
         if (bird_state == BirdState::ALIVE) {
-        vel_y += constants::GRAVITY * dt;
+        vel_y += birdcfg::GRAVITY * dt;
         pos_y += vel_y * dt;
         setRotation(vel_y);
         }
