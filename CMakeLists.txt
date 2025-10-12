@@ -16,15 +16,11 @@ FetchContent_MakeAvailable(threepp)
 add_executable(flappy_demo main.cpp
         constants.hpp
         bird.hpp
-        draw.hpp
+        points.hpp
         pipes.hpp
         collisions.hpp
 )
 target_link_libraries(flappy_demo PRIVATE threepp::threepp)
-
-target_include_directories(flappy_demo
-        PRIVATE "${CMAKE_CURRENT_SOURCE_DIR}/bird.hpp"
-)
 
 ######### Emscripten #######
 if (DEFINED EMSCRIPTEN)

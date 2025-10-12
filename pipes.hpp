@@ -59,10 +59,7 @@ struct PipePair {
     }
 };
 
-inline std::shared_ptr<threepp::Group> createPipeGroup(
-    auto &pipe_geom,
-    auto &pipe_mat) {
-
+inline std::shared_ptr<threepp::Group> createPipeGroup(auto &pipe_geom, auto &pipe_mat) {
     auto group = threepp::Group::create();
 
     auto top = threepp::Mesh::create(pipe_geom, pipe_mat);

@@ -18,7 +18,7 @@ inline bool birdHitsPipe(const Bird& bird, auto pipes) {
         auto& p = pipes[i];
 
         if (std::fabs(p.pos_x) <= (birdcfg::WIDTH*0.5f + pipecfg::PIPE_RADIUS)) {
-            if (!(std::fabs(p.pos_y) + birdcfg::HITBOX_RADIUS <= p.pos_y +    pipecfg::GAP_SIZE*0.5f)) {
+            if (std::fabs(bird.pos_y - p.pos_y) > pipecfg::GAP_SIZE*0.5f - birdcfg::HEIGHT*0.5f) {
                 return true;
             }
         }
