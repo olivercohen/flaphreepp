@@ -4,9 +4,20 @@
 
 #pragma once
 
+namespace groundcfg {
+    constexpr float WIDTH           = 60.0f;
+    constexpr float HEIGHT          = 3.0f;
+    constexpr float DEPTH           = 50.f;
+    constexpr float POSITION_Y      = -11;
+}
+
 namespace birdcfg {
-    constexpr float GRAVITY = -20.0f;
-    constexpr float FLAP_VEL = 10.0f;
+    constexpr float GRAVITY         = -20.0f;
+    constexpr float FLAP_VEL        = 10.0f;
+    constexpr float HITBOX_RADIUS   = 0.75f;
+    constexpr float WIDTH           = 1.2f;
+    constexpr float HEIGHT          = 1.0f;
+    constexpr float DEPTH           = 0.6f;
 }
 
 namespace pipecfg {

@@ -2,6 +2,7 @@
 #include "threepp/threepp.hpp"
 #include "bird.hpp"
 #include "pipes.hpp"
+#include "collisions.hpp"
 #include <vector>
 #include <memory>
 
@@ -52,7 +53,7 @@ int main() {
     Bird bird;
 
     auto bird_body_mat = threepp::MeshStandardMaterial::create({{"color",threepp::Color::purple}});
-    auto bird_body = threepp::Mesh::create(threepp::BoxGeometry::create(1.2f,1.f,0.6f), bird_body_mat);
+    auto bird_body = threepp::Mesh::create(threepp::BoxGeometry::create(birdcfg::WIDTH,birdcfg::HEIGHT,birdcfg::DEPTH), bird_body_mat);
 
     bird_body->castShadow = true;
     bird_body->receiveShadow = false;
@@ -94,10 +95,10 @@ int main() {
 
     // Ground
     auto ground_material = threepp::MeshStandardMaterial::create({{"color", threepp::Color::darkgreen}});
-    auto ground_geometry = threepp::BoxGeometry::create(60,3,50);
+    auto ground_geometry = threepp::BoxGeometry::create(groundcfg::WIDTH,groundcfg::HEIGHT,groundcfg::DEPTH);
     auto ground = threepp::Mesh::create(ground_geometry, ground_material);
 
-    ground->position.set(0,-11,0);
+    ground->position.set(0,groundcfg::POSITION_Y,0);
     ground->castShadow = false;
     ground->receiveShadow = true;
 
@@ -109,22 +110,30 @@ int main() {
     canvas.animate([&]() {
         float dt = clock.getDelta();
 
+        // BIRD UPDATES
         bird.update(dt);
         bird_body->position.y = bird.pos_y;
         bird_body->rotation.z = bird.rot_z;
 
-        for (int i = 0; i < pipecfg::NUM_PIPES; ++i) {
-            auto& p = pipes[i];
-            auto& grp = pipeGroups[i];
+        if (birdHasCollided(bird, pipes)) {
+            bird.kill();
+            for (int i = 0; i < pipecfg::NUM_PIPES; ++i) {
+                auto& p = pipes[i];
+                p.freeze();
+            }
+        } else {
+            for (int i = 0; i < pipecfg::NUM_PIPES; ++i) {
+                auto& p = pipes[i];
+                auto& grp = pipeGroups[i];
 
-            p.update(dt);
-            grp->position.set(p.pos_x, p.pos_y, 0);
+                p.update(dt);
+                grp->position.set(p.pos_x, p.pos_y, 0);
 
-            if (p.isOffscreen()) {
-                p.spawn(pipecfg::RESPAWN_X);
+                if (p.isOffscreen()) {
+                    p.spawn(pipecfg::RESPAWN_X);
             }
         }
-
+        }
         renderer.render(*scene, *camera); //
     });
 
