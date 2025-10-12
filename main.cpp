@@ -9,23 +9,35 @@ int main() {
     // THREEPP CONFIG
     threepp::Canvas canvas("Flappy_Demo 0.1");
     threepp::GLRenderer renderer{canvas.size()};
-    renderer.setClearColor(threepp::Color::blanchedalmond);
+    renderer.setClearColor(threepp::Color::skyblue);
+
 
     auto scene = threepp::Scene().create();
     auto camera = threepp::PerspectiveCamera::create(30, canvas.aspect(), 0.1f, 100.f);
     camera->position.set(0, 0, 45.f);
     threepp::OrbitControls controls{*camera, canvas};
+    scene->fog = threepp::Fog(threepp::Color::skyblue, 43.f, 55.f);
 
-    //LYS
+    //LYS + SHADOWS
     auto hemi_light = threepp::HemisphereLight::create(threepp::Color::white, threepp::Color::darkslategray, 0.5f);
     hemi_light->intensity = 0.7f;
     scene->add(hemi_light);
 
-    auto dir_light = threepp::DirectionalLight::create(threepp::Color::lightyellow, 0.8f);
+    auto dir_light = threepp::DirectionalLight::create(threepp::Color::lightyellow, 0.9f);
     dir_light->position.set(10,12,8);
     dir_light->castShadow = true;
+    // dir_light->shadow->mapSize.set(1028, 1028);
+
+    // endrer på verdier i DirectionalLightShadow threepp biblioteket (tror jeg..?)
+    if (auto* ortho = dynamic_cast<threepp::OrthographicCamera*>(dir_light->shadow->camera.get())) {
+        ortho->left   = -40.f;
+        ortho->right  =  40.f;
+        ortho->top    =  40.f;
+        ortho->bottom = -40.f;
+    }
 
     scene->add(dir_light);
+    renderer.shadowMap().enabled = true;
 
     // auto grid = threepp::GridHelper::create(20,20);
     // scene->add(grid);
@@ -40,15 +52,22 @@ int main() {
     Bird bird;
 
     auto bird_body_mat = threepp::MeshStandardMaterial::create({{"color",threepp::Color::purple}});
-    auto bird_body = threepp::Mesh::create(threepp::BoxGeometry::create(1,1,1), bird_body_mat);
+    auto bird_body = threepp::Mesh::create(threepp::BoxGeometry::create(1.2f,1.f,0.6f), bird_body_mat);
+
+    bird_body->castShadow = true;
+    bird_body->receiveShadow = false;
     bird_body->position.set(0, bird.pos_y, 0);
     bird_body->rotation.set(0,0,bird.rot_z);
+
     scene->add(bird_body);
 
     // PIPE LOGIC / DRAW PIPE
 
     auto pipe_material = threepp::MeshStandardMaterial::create({{"color", threepp::Color::lightgreen}});
     auto pipe_geometry = threepp::CylinderGeometry::create(pipecfg::PIPE_RADIUS,pipecfg::PIPE_RADIUS, pipecfg::PIPE_HEIGHT);
+
+    pipe_material->roughness = 0.4f;
+    pipe_material->metalness = 0.3f;
 
     std::vector<PipePair> pipes;    // en pipe per pair
     std::vector<std::shared_ptr<threepp::Group>> pipeGroups;
@@ -74,19 +93,23 @@ int main() {
     canvas.addKeyListener(input);
 
     // Ground
-    auto ground_material = threepp::MeshStandardMaterial::create({{"color", threepp::Color::darkgrey}});
-    auto ground_geometry = threepp::BoxGeometry::create(40,3,4);
+    auto ground_material = threepp::MeshStandardMaterial::create({{"color", threepp::Color::darkgreen}});
+    auto ground_geometry = threepp::BoxGeometry::create(60,3,50);
     auto ground = threepp::Mesh::create(ground_geometry, ground_material);
+
     ground->position.set(0,-11,0);
+    ground->castShadow = false;
+    ground->receiveShadow = true;
 
     scene->add(ground);
+
 
     threepp::Clock clock;
     // canvas.animate() loopen som faktisk tegner
     canvas.animate([&]() {
-        double dt = clock.getDelta();
+        float dt = clock.getDelta();
 
-        bird.update(static_cast<float>(dt));
+        bird.update(dt);
         bird_body->position.y = bird.pos_y;
         bird_body->rotation.z = bird.rot_z;
 

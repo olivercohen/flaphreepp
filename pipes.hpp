@@ -67,6 +67,12 @@ inline std::shared_ptr<threepp::Group> createPipeGroup(
 
     auto top = threepp::Mesh::create(pipe_geom, pipe_mat);
     auto bot = threepp::Mesh::create(pipe_geom, pipe_mat);
+
+    top->castShadow = true;
+    top->receiveShadow = true;
+    bot->castShadow = true;
+    bot->receiveShadow = true;
+
     top->position.set(0, (pipecfg::PIPE_HEIGHT + pipecfg::GAP_SIZE)/2, 0);
     bot->position.set(0, -(pipecfg::PIPE_HEIGHT + pipecfg::GAP_SIZE)/2, 0);
 
