@@ -7,6 +7,6 @@ Goals:
 - get a input from a player and move the bird (rotation and position) ✅
 - create and display n amount of pipes with a fixed spacing ✅
 - respawn the pipes when they have left the screen ✅
-- detect colliosions (the bird and obstacles)
-- points system
+- detect colliosions (the bird and obstacles) ✅
+- points system ✅
 - replay without having to relaunch the application
