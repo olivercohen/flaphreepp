@@ -43,6 +43,11 @@ struct PipePair {
         pipe_state = PipesState::FREEZE;
     }
 
+    void unfreeze() {
+        speed = pipecfg::PIPE_SPEED;
+        pipe_state = PipesState::ONSCREEN;
+    }
+
     void spawn(const float x) {
         pos_x = x;
         pos_y = static_cast<float>(distrib(gen));

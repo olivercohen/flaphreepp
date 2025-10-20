@@ -2,9 +2,11 @@
 #include "threepp/threepp.hpp"
 #include "bird.hpp"
 #include "pipes.hpp"
+#include "game_loop_logic.hpp"
 #include "collisions.hpp"
 #include <vector>
 #include <memory>
+#include "threepp/loaders/AssimpLoader.hpp"
 
 int main() {
     // THREEPP CONFIG
@@ -63,11 +65,11 @@ int main() {
 
     // BIRD LOGIC / DRAW BIRD
     Bird bird;
+    threepp::AssimpLoader loader;
+    const std::string bird_model_path = std::string(DATA_FOLDER) + "/models/flappybirdPurple.fbx";
+    auto bird_body = loader.load(bird_model_path);
 
-    auto bird_body_mat = threepp::MeshStandardMaterial::create({{"color", threepp::Color::purple}});
-    auto bird_body = threepp::Mesh::create(
-        threepp::BoxGeometry::create(birdcfg::WIDTH, birdcfg::HEIGHT, birdcfg::DEPTH), bird_body_mat);
-
+    bird_body->scale.multiplyScalar(0.0065f);     // krymp 100x
     bird_body->castShadow = true;
     bird_body->receiveShadow = false;
     bird_body->position.set(0, bird.pos_y, 0);
@@ -153,7 +155,6 @@ int main() {
                 }
             }
         }
-
         renderer.clear();
         renderer.render(*scene, *camera); // tegn 3D-scenen
         hud.apply(renderer); // tegn HUD oppå (PROBLEM!! gjør at 3D-scenen ikke er synlig)

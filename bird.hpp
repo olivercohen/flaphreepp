@@ -45,6 +45,13 @@ struct Bird {
         bird_state = BirdState::DEAD;
     }
 
+    void reset() {
+        bird_state = BirdState::ALIVE;
+        pos_y = 0.0f;
+        vel_y = 0.0f;
+        rot_z = 0.0f;
+    }
+
     // handles rotation with max/min rotaion
     void setRotation(float velocity) {
         rot_z = velocity*0.01f*threepp::math::PI;
@@ -70,6 +77,10 @@ public:
     void onKeyPressed(threepp::KeyEvent e) override {
         if (e.key == threepp::Key::SPACE) {
             bird.flap();
+        } else if (e.key == threepp::Key::R) {
+            if (bird.bird_state == BirdState::DEAD) {
+                bird.reset();
+            }
         }
     }
 private:
